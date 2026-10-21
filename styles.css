@@ -89,11 +89,10 @@ body {
   background: radial-gradient(circle at 50% 27%, var(--bg-glow), transparent 50%) var(--bg);
   background-attachment: fixed;
   min-height: 100vh;
-  padding-bottom: 90px;
+  padding-bottom: 140px;
   position: relative;
   transition: background-color .2s, color .2s;
 }
-body.com-materiais { padding-bottom: 135px; }
 
 body::before {
   content: "🔧";
@@ -322,32 +321,44 @@ body::before {
 }
 .hidden { display: none !important; }
 
-/* ---------- Barra de materiais (experimental) ---------- */
+/* ---------- Barra de materiais ---------- */
 .materials {
   position: fixed;
   z-index: 5;
   bottom: 68px;
   left: 0;
   right: 0;
-  height: 43px;
+  min-height: 45px;
   background: var(--surface-alt);
-  border-top: 2px solid var(--brown);
+  border-top: 1px solid var(--border);
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 12px;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 6px 16px;
 }
-.materials div {
+.materials-title {
+  font-size: 9px;
+  font-weight: 800;
+  color: var(--muted);
+  letter-spacing: .5px;
+  margin-right: 4px;
+}
+.mat-chip {
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 5px;
-  padding: 6px 12px;
-  font-size: 10px;
-  color: var(--text-soft);
+  padding: 6px 11px;
+  font-size: 11px;
+  color: var(--muted);
   font-weight: 700;
   white-space: nowrap;
 }
-.materials b { color: var(--brown); margin-left: 3px; }
+.mat-chip b { color: var(--muted); margin-left: 2px; }
+.mat-chip.has { color: var(--text); border-color: var(--brown); background: var(--selected-bg); }
+.mat-chip.has b { color: var(--brown); font-size: 13px; }
+.mat-chip.warn { color: var(--clear-fg); background: var(--clear-bg); border-color: transparent; }
 
 /* ---------- Rodapé ---------- */
 .footer {
@@ -476,7 +487,7 @@ body::before {
   position: fixed;
   z-index: 40;
   right: 20px;
-  bottom: 125px;
+  bottom: 130px;
   background: var(--toast-bg);
   color: #fff;
   padding: 11px 15px;
@@ -492,8 +503,9 @@ body::before {
 /* ---------- Telas menores ---------- */
 @media (max-width: 1060px) {
   .footer { position: relative; flex-wrap: wrap; margin-top: 20px; }
-  .materials { position: relative; bottom: auto; margin-top: 20px; overflow-x: auto; justify-content: flex-start; padding: 0 12px; }
-  body, body.com-materiais { padding-bottom: 0; }
+  .materials { position: relative; bottom: auto; margin-top: 20px; justify-content: flex-start; }
+  .materials-title { width: 100%; }
+  body { padding-bottom: 0; }
   .footer-actions { margin-left: 0; flex-wrap: wrap; }
   .toast { bottom: 20px; }
 }

@@ -7,8 +7,9 @@ Para ligar/desligar, mude `true`/`false` no objeto `EXPERIMENTAL` no topo do `sc
 |---|---|---|---|
 | `travarKit` | `true` | Combos e pacotes (Stages, Kit Completo, Lataria + Motor) não podem ser marcados junto com os itens que incluem, **nos dois sentidos**: o pacote bloqueia as peças, e uma peça avulsa bloqueia os pacotes que a incluem. | No site original dava para marcar o kit **e** as peças, cobrando duas vezes. |
 | `historico` | `true` | SALVAR ORDEM guarda numa lista (até 100) e o botão HISTÓRICO permite reabrir ou excluir. | No original, salvar só guardava a última ordem e não havia como vê-la. |
-| `barraMateriais` | `false` | Mostra a barra de materiais (Alumínio, Borracha, Cobre, Plástico, Sucata). | No original os números eram fixos em 0 — não funcionava. Desligada até ter uso real. |
 | `idParaCopiar` | `true` | COPIAR também exige o Passaporte / ID. | No original o campo dizia "Obrigatório" mas COPIAR funcionava sem ele. |
+
+A antiga opção `barraMateriais` saiu daqui: a barra de materiais agora é um recurso fixo, que soma os materiais da ordem (veja `RECEITAS` no `script.js`).
 
 Observação: o histórico fica salvo **no navegador de cada pessoa** (localStorage).
 Ele não é compartilhado entre mecânicos nem enviado para lugar nenhum.

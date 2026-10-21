@@ -6,10 +6,9 @@ const DESCONTOS = [0, 5, 10, 15, 20, 25];
 // Recursos experimentais (temporários) — ver NOTAS-EXPERIMENTAIS.md.
 // Troque true/false para ligar ou desligar cada um.
 const EXPERIMENTAL = {
-  travarKit: true,       // marcar um Kit Completo desmarca e bloqueia as peças avulsas daquela classe
-  historico: true,       // ordens salvas vão para uma lista que pode ser reaberta ou excluída
-  barraMateriais: false, // barra de materiais do site original (só mostrava 0)
-  idParaCopiar: true     // COPIAR também exige Passaporte / ID
+  travarKit: true,   // combos/pacotes não podem ser marcados junto com os itens que incluem (nos dois sentidos)
+  historico: true,   // ordens salvas vão para uma lista que pode ser reaberta ou excluída
+  idParaCopiar: true // COPIAR também exige Passaporte / ID
 };
 
 // ================= TABELA DE PREÇOS =================
@@ -118,6 +117,62 @@ const CATEGORIAS = [
   }
 ];
 
+// ================= MATERIAIS =================
+// Lista de materiais mostrada na barra de baixo.
+const MATERIAIS = [
+  { id: "aluminio", nome: "Alumínio", icone: "🔩" },
+  { id: "borracha", nome: "Borracha", icone: "🛞" },
+  { id: "cobre", nome: "Cobre", icone: "⚡" },
+  { id: "plastico", nome: "Plástico", icone: "🧪" },
+  { id: "sucata", nome: "Sucata", icone: "📦" }
+];
+
+// Quanto de cada material um item gasta (por unidade).
+//   null           → ainda não cadastrado (aparece o aviso na barra)
+//   {}             → não gasta material
+//   { cobre: 2 }   → gasta 2 de Cobre (só escreva os materiais que usa)
+// Pacotes (Stages, Kit Completo) e combos (Lataria + Motor) somam as peças sozinhos — não precisam estar aqui.
+const RECEITAS = {
+  // Serviços Gerais
+  "lataria": null,          // Reparo de Lataria
+  "motor": null,            // Reparo de Motor
+  "oleo": null,             // Troca de Óleo
+
+  // Peças Classe D
+  "d-freio": null, "d-suspensao": null, "d-ecu": null, "d-filtro": null, "d-escape": null,
+  "d-coletor": null, "d-combustivel": null, "d-turbo": null, "d-intercooler": null, "d-embreagem": null,
+
+  // Peças Classe C
+  "c-freio": null, "c-suspensao": null, "c-ecu": null, "c-filtro": null, "c-escape": null,
+  "c-coletor": null, "c-combustivel": null, "c-turbo": null, "c-intercooler": null, "c-embreagem": null,
+
+  // Peças Classe B
+  "b-freio": null, "b-suspensao": null, "b-ecu": null, "b-filtro": null, "b-escape": null,
+  "b-coletor": null, "b-combustivel": null, "b-turbo": null, "b-intercooler": null, "b-embreagem": null,
+
+  // Reparos Peças
+  "rep-ecu": null,          // Reparo de ECU
+  "rep-turbo-escape": null, // Reparo de Turbo ou Escape
+  "rep-filtro": null,       // Reparo de Filtro de Ar
+  "rep-coletor": null,      // Reparo de Coletor, Combustível ou Intercooler
+  "rep-embreagem": null,    // Reparo de Embreagem
+
+  // Estética
+  "pintura": null, "rodas": null, "aerofolio": null, "parachoque": null, "peca-estetica": null,
+
+  // Nitro
+  "nitro-garrafa": null,        // Garrafa Nitro Pequena
+  "nitro-garrafa-grande": null, // Garrafa Nitro Grande (em breve)
+  "nitro-refil": null,          // Refil Nitro
+
+  // Reboque
+  "reboque": null,
+
+  // Outros
+  "lockpick": null,
+  "lockpick-avancada": null
+};
+
 // ================= LÓGICA =================
 
 const $ = id => document.getElementById(id);
@@ -139,6 +194,62 @@ const money = v => "$" + Math.round(v).toLocaleString("pt-BR");
 const ehFaixa = item => item.preco == null;
 const precoPadrao = item => (ehFaixa(item) ? item.min : item.preco);
 const limitar = (item, v) => (ehFaixa(item) ? Math.min(item.max, Math.max(item.min, v)) : item.preco);
+
+// Materiais de 1 unidade do item: { mat: { cobre: 2, ... }, faltando: true se algo ainda não foi cadastrado }.
+// Pacotes/combos sem receita própria somam as receitas das peças.
+function materiaisDe(item) {
+  const receita = RECEITAS[item.id];
+  if (receita) return { mat: { ...receita }, faltando: false };
+  if (!item.kit) return { mat: {}, faltando: true };
+  const mat = {};
+  let faltando = false;
+  item.kit.forEach(id => {
+    const parte = materiaisDe(ITENS.get(id).item);
+    faltando = faltando || parte.faltando;
+    for (const [m, n] of Object.entries(parte.mat)) mat[m] = (mat[m] || 0) + n;
+  });
+  return { mat, faltando };
+}
+
+const textoMateriais = mat =>
+  MATERIAIS.filter(m => mat[m.id]).map(m => `${m.icone} ${mat[m.id]}`).join("  ");
+
+function renderMateriais() {
+  const total = {};
+  let semCadastro = 0;
+  for (const [id, s] of selecao) {
+    const item = ITENS.get(id)?.item;
+    if (!item) continue;
+    const { mat, faltando } = materiaisDe(item);
+    if (faltando) semCadastro++;
+    for (const [m, n] of Object.entries(mat)) total[m] = (total[m] || 0) + n * s.qtd;
+  }
+
+  const el = $("materials");
+  el.innerHTML = "";
+  const titulo = document.createElement("span");
+  titulo.className = "materials-title";
+  titulo.textContent = "MATERIAIS";
+  el.appendChild(titulo);
+
+  MATERIAIS.forEach(m => {
+    const chip = document.createElement("div");
+    chip.className = "mat-chip" + (total[m.id] ? " has" : "");
+    chip.append(`${m.icone} ${m.nome}: `);
+    const b = document.createElement("b");
+    b.textContent = total[m.id] || 0;
+    chip.appendChild(b);
+    el.appendChild(chip);
+  });
+
+  if (semCadastro) {
+    const aviso = document.createElement("div");
+    aviso.className = "mat-chip warn";
+    aviso.textContent = `⚠ ${semCadastro} ${semCadastro === 1 ? "item" : "itens"} sem materiais cadastrados`;
+    aviso.title = "Preencha esses itens em RECEITAS no script.js";
+    el.appendChild(aviso);
+  }
+}
 
 function toast(msg) {
   const el = $("toast");
@@ -232,6 +343,8 @@ function criarCard(item, categoria, buscando) {
   }
 
   if (ehFaixa(item)) notasFixas.push(`faixa ${money(item.min)} – ${money(item.max)}`);
+  const mat = textoMateriais(materiaisDe(item).mat);
+  if (mat) notasFixas.push(mat);
 
   let precoInput, qtdInput;
   const precoAtual = () => limitar(item, Number(precoInput?.value) || precoPadrao(item));
@@ -356,6 +469,7 @@ function atualizarTotal() {
   const total = subtotal * (1 - desconto / 100);
   $("total").textContent = money(total);
   $("subtotal").textContent = desconto && subtotal ? `Subtotal ${money(subtotal)} · -${desconto}%` : "";
+  renderMateriais();
   return { subtotal, desconto, total };
 }
 
@@ -565,8 +679,6 @@ DESCONTOS.forEach(d => {
 });
 
 $("historyBtn").classList.toggle("hidden", !EXPERIMENTAL.historico);
-$("materials").classList.toggle("hidden", !EXPERIMENTAL.barraMateriais);
-document.body.classList.toggle("com-materiais", EXPERIMENTAL.barraMateriais);
 
 searchEl.addEventListener("input", () => {
   renderTabs();
