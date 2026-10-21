@@ -112,7 +112,8 @@ const CATEGORIAS = [
     nome: "OUTROS",
     itens: [
       { id: "lockpick", nome: "Lockpick", preco: 60, qtd: true },
-      { id: "lockpick-avancada", nome: "Lockpick Avançada", preco: 120, qtd: true }
+      { id: "lockpick-avancada", nome: "Lockpick Avançada", preco: 120, qtd: true },
+      { id: "kit-reparo-motor", nome: "Kit de Reparo de Motor", preco: 265, qtd: true }
     ]
   }
 ];
@@ -180,7 +181,8 @@ const RECEITAS = {
 
   // Outros
   "lockpick": { aluminio: 3, aco: 2 },
-  "lockpick-avancada": null
+  "lockpick-avancada": null,
+  "kit-reparo-motor": { plastico: 10, aluminio: 20 } // Kit de Reparo de Motor (cliente leva para consertar o motor na rua)
 };
 
 // ================= LÓGICA =================
