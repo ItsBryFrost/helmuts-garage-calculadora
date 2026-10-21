@@ -65,10 +65,10 @@ const CATEGORIAS = [
   {
     nome: "SERVIÇOS GERAIS",
     itens: [
-      { id: "lataria", nome: "Reparo de Lataria", min: 45, max: 60 },
-      { id: "motor", nome: "Reparo de Motor", min: 100, max: 130 },
-      { id: "lataria-motor", nome: "Reparo de Lataria + Motor", min: 140, max: 180, kit: ["lataria", "motor"] },
-      { id: "oleo", nome: "Troca de Óleo", min: 25, max: 35 }
+      { id: "lataria", nome: "Reparo de Lataria", preco: 60 },
+      { id: "motor", nome: "Reparo de Motor", preco: 130 },
+      { id: "lataria-motor", nome: "Reparo de Lataria + Motor", preco: 190, kit: ["lataria", "motor"] },
+      { id: "oleo", nome: "Troca de Óleo", preco: 35 }
     ]
   },
   pecasClasse("D", { freioSuspensao: 180, ecu: 360, filtro: 360, escape: 180, coletor: 90, combustivel: 90, turbo: 270, intercooler: 180, embreagem: 180 }),
@@ -77,11 +77,11 @@ const CATEGORIAS = [
   {
     nome: "REPAROS PEÇAS",
     itens: [
-      { id: "rep-ecu", nome: "Reparo de ECU", min: 75, max: 90, qtd: true },
-      { id: "rep-turbo-escape", nome: "Reparo de Turbo ou Escape", min: 85, max: 100, qtd: true },
-      { id: "rep-filtro", nome: "Reparo de Filtro de Ar", min: 95, max: 110, qtd: true },
-      { id: "rep-coletor", nome: "Reparo de Coletor, Combustível ou Intercooler", min: 125, max: 140, qtd: true },
-      { id: "rep-embreagem", nome: "Reparo de Embreagem", min: 125, max: 140, qtd: true }
+      { id: "rep-ecu", nome: "Reparo de ECU", preco: 90, qtd: true },
+      { id: "rep-turbo-escape", nome: "Reparo de Turbo ou Escape", preco: 100, qtd: true },
+      { id: "rep-filtro", nome: "Reparo de Filtro de Ar", preco: 110, qtd: true },
+      { id: "rep-coletor", nome: "Reparo de Coletor, Combustível ou Intercooler", preco: 140, qtd: true },
+      { id: "rep-embreagem", nome: "Reparo de Embreagem", preco: 140, qtd: true }
     ]
   },
   {
@@ -99,13 +99,13 @@ const CATEGORIAS = [
     itens: [
       { id: "nitro-garrafa", nome: "Garrafa Nitro Pequena", preco: 400, qtd: true },
       { id: "nitro-garrafa-grande", nome: "Garrafa Nitro Grande", indisponivel: true },
-      { id: "nitro-refil", nome: "Refil Nitro (Qualquer Tamanho)", min: 50, max: 70, qtd: true }
+      { id: "nitro-refil", nome: "Refil Nitro (Qualquer Tamanho)", preco: 70, qtd: true }
     ]
   },
   {
     nome: "REBOQUE",
     itens: [
-      { id: "reboque", nome: "Reboque", min: 60, max: 100 }
+      { id: "reboque", nome: "Reboque", preco: 100 }
     ]
   },
   {
