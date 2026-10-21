@@ -32,24 +32,42 @@ function pecasClasse(letra, p) {
     { id: `${c}-intercooler`, nome: nome("Intercooler"), preco: p.intercooler },
     { id: `${c}-embreagem`, nome: nome("Embreagem"), preco: p.embreagem }
   ];
-  // O kit custa a soma das peças (sem desconto embutido).
-  pecas.push({
-    id: `${c}-kit`,
-    nome: `🔶 Kit Completo Classe ${letra}`,
-    preco: pecas.reduce((s, x) => s + x.preco, 0),
-    kit: pecas.map(x => x.id)
+
+  // Pacotes: custam a soma das peças incluídas (sem desconto embutido).
+  // "inclui" é o texto mostrado no card e na ordem copiada.
+  const pacote = (id, titulo, partes, inclui) => ({
+    id: `${c}-${id}`,
+    nome: `${titulo} (Classe ${letra})`,
+    preco: partes.reduce((s, x) => s + pecas.find(pc => pc.id === `${c}-${x}`).preco, 0),
+    kit: partes.map(x => `${c}-${x}`),
+    inclui
   });
-  return { nome: `PEÇAS CLASSE ${letra}`, itens: pecas };
+
+  const stage1 = ["ecu"];
+  const stage2 = [...stage1, "filtro", "escape"];
+  const stage3 = [...stage2, "coletor", "combustivel", "turbo", "intercooler", "embreagem"];
+  const todas = pecas.map(x => x.id.slice(c.length + 1));
+
+  return {
+    nome: `PEÇAS CLASSE ${letra}`,
+    itens: [
+      ...pecas,
+      pacote("stage1", "⚡ Stage 1", stage1, "ECU"),
+      pacote("stage2", "⚡ Stage 2", stage2, "Stage 1 + Filtro de Ar Esportivo, Escape Completo Esportivo"),
+      pacote("stage3", "⚡ Stage 3", stage3, "Stage 1 e 2 + Coletor de Admissão, Sistema de Combustível Aprimorado, Upgrade de Turbo, Intercooler, Embreagem de Corrida"),
+      pacote("kit", "🔶 Kit Completo", todas, "Stage 3 + Freio e Suspensão")
+    ]
+  };
 }
 
 const CATEGORIAS = [
   {
     nome: "SERVIÇOS GERAIS",
     itens: [
-      { id: "lataria", nome: "Reparo de lataria", min: 45, max: 60 },
-      { id: "motor", nome: "Reparo de motor", min: 100, max: 130 },
-      { id: "lataria-motor", nome: "Reparo de lataria + motor", min: 140, max: 180 },
-      { id: "oleo", nome: "Troca de óleo", min: 25, max: 35 }
+      { id: "lataria", nome: "Reparo de Lataria", min: 45, max: 60 },
+      { id: "motor", nome: "Reparo de Motor", min: 100, max: 130 },
+      { id: "lataria-motor", nome: "Reparo de Lataria + Motor", min: 140, max: 180 },
+      { id: "oleo", nome: "Troca de Óleo", min: 25, max: 35 }
     ]
   },
   pecasClasse("D", { freioSuspensao: 180, ecu: 360, filtro: 360, escape: 180, coletor: 90, combustivel: 90, turbo: 270, intercooler: 180, embreagem: 180 }),
@@ -59,10 +77,10 @@ const CATEGORIAS = [
     nome: "REPAROS PEÇAS",
     itens: [
       { id: "rep-ecu", nome: "Reparo de ECU", min: 75, max: 90, qtd: true },
-      { id: "rep-turbo-escape", nome: "Reparo de turbo ou escape", min: 85, max: 100, qtd: true },
-      { id: "rep-filtro", nome: "Reparo de filtro de ar", min: 95, max: 110, qtd: true },
-      { id: "rep-coletor", nome: "Reparo de coletor, combustível ou intercooler", min: 125, max: 140, qtd: true },
-      { id: "rep-embreagem", nome: "Reparo de embreagem", min: 125, max: 140, qtd: true }
+      { id: "rep-turbo-escape", nome: "Reparo de Turbo ou Escape", min: 85, max: 100, qtd: true },
+      { id: "rep-filtro", nome: "Reparo de Filtro de Ar", min: 95, max: 110, qtd: true },
+      { id: "rep-coletor", nome: "Reparo de Coletor, Combustível ou Intercooler", min: 125, max: 140, qtd: true },
+      { id: "rep-embreagem", nome: "Reparo de Embreagem", min: 125, max: 140, qtd: true }
     ]
   },
   {
@@ -71,15 +89,15 @@ const CATEGORIAS = [
       { id: "pintura", nome: "Pintura", preco: 200 },
       { id: "rodas", nome: "Rodas", preco: 215 },
       { id: "aerofolio", nome: "Aerofólio", preco: 150 },
-      { id: "parachoque", nome: "Para-choque", preco: 150, qtd: true },
-      { id: "peca-estetica", nome: "Peça estética", preco: 150, qtd: true }
+      { id: "parachoque", nome: "Para-Choque", preco: 150, qtd: true },
+      { id: "peca-estetica", nome: "Peça Estética", preco: 150, qtd: true }
     ]
   },
   {
     nome: "NITRO",
     itens: [
       { id: "nitro-garrafa", nome: "Garrafa Nitro Pequena", preco: 400, qtd: true },
-      { id: "nitro-refil", nome: "Refil Nitro (qualquer tamanho)", min: 50, max: 70, qtd: true }
+      { id: "nitro-refil", nome: "Refil Nitro (Qualquer Tamanho)", min: 50, max: 70, qtd: true }
     ]
   },
   {
@@ -126,12 +144,19 @@ function toast(msg) {
   toastTimer = setTimeout(() => el.classList.remove("show"), 2200);
 }
 
-// Kit selecionado que inclui este item (só com EXPERIMENTAL.travarKit).
+// O pacote cobre o item se o item é uma das suas peças ou um pacote menor (ex.: Stage 3 cobre Stage 1 e 2).
+function cobre(pacote, item) {
+  if (!pacote.kit || pacote.id === item.id) return false;
+  return item.kit ? item.kit.every(p => pacote.kit.includes(p)) : pacote.kit.includes(item.id);
+}
+
+// Pacote selecionado que já inclui este item (só com EXPERIMENTAL.travarKit).
 function kitQueBloqueia(id) {
   if (!EXPERIMENTAL.travarKit) return null;
+  const item = ITENS.get(id).item;
   for (const selId of selecao.keys()) {
-    const kit = ITENS.get(selId)?.item;
-    if (kit?.kit?.includes(id)) return kit;
+    const pacote = ITENS.get(selId)?.item;
+    if (pacote && cobre(pacote, item)) return pacote;
   }
   return null;
 }
@@ -179,8 +204,9 @@ function criarCard(item, categoria, buscando) {
 
   const notas = [];
   if (buscando) notas.push(categoria);
+  if (item.inclui) notas.push(`Inclui: ${item.inclui}`);
   if (ehFaixa(item)) notas.push(`faixa ${money(item.min)} – ${money(item.max)}`);
-  if (kit) notas.push("incluído no kit");
+  if (kit) notas.push(`incluído no ${kit.nome.replace(/^\S+\s/, "")}`);
   if (notas.length) {
     const sub = document.createElement("span");
     sub.className = "item-sub";
@@ -254,7 +280,9 @@ function criarCard(item, categoria, buscando) {
     if (check.checked) {
       const preco = limitar(item, Number(precoInput?.value) || precoPadrao(item));
       selecao.set(item.id, { qtd: 1, preco });
-      if (item.kit && EXPERIMENTAL.travarKit) item.kit.forEach(id => selecao.delete(id));
+      if (item.kit && EXPERIMENTAL.travarKit) {
+        for (const id of [...selecao.keys()]) if (cobre(item, ITENS.get(id).item)) selecao.delete(id);
+      }
     } else {
       selecao.delete(item.id);
     }
@@ -281,7 +309,7 @@ function linhasOrdem() {
   for (const [id, s] of selecao) {
     const item = ITENS.get(id)?.item;
     if (!item) continue;
-    linhas.push({ nome: item.nome, qtd: s.qtd, preco: s.preco, total: s.preco * s.qtd });
+    linhas.push({ nome: item.nome, inclui: item.inclui, qtd: s.qtd, preco: s.preco, total: s.preco * s.qtd });
   }
   return linhas;
 }
@@ -313,6 +341,7 @@ function textoOrdem() {
   t += "\n";
   linhasOrdem().forEach(l => {
     t += `${l.nome}${l.qtd > 1 ? ` x${l.qtd}` : ""} - ${money(l.total)}\n`;
+    if (l.inclui) t += `   ↳ ${l.inclui}\n`;
   });
   t += "\n";
   t += `Subtotal: ${money(subtotal)}\n`;
@@ -468,6 +497,27 @@ $("historyPanel").addEventListener("click", e => {
 document.addEventListener("keydown", e => {
   if (e.key === "Escape") fecharHistorico();
 });
+
+// ----- Modo escuro -----
+// Sem escolha salva, segue o tema do sistema. O botão salva a escolha neste navegador.
+
+const temaSistema = window.matchMedia("(prefers-color-scheme: dark)");
+const temaAtual = () => document.documentElement.dataset.theme || (temaSistema.matches ? "dark" : "light");
+
+function atualizarBotaoTema() {
+  const escuro = temaAtual() === "dark";
+  $("themeBtn").textContent = escuro ? "☀️" : "🌙";
+  $("themeBtn").title = escuro ? "Modo claro" : "Modo escuro";
+}
+
+$("themeBtn").onclick = () => {
+  const novo = temaAtual() === "dark" ? "light" : "dark";
+  document.documentElement.dataset.theme = novo;
+  try { localStorage.setItem("helmutsGarage.tema", novo); } catch {}
+  atualizarBotaoTema();
+};
+temaSistema.addEventListener("change", atualizarBotaoTema);
+atualizarBotaoTema();
 
 // ----- Início -----
 

@@ -5,10 +5,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Calculadora Helmut's Garage</title>
   <link rel="stylesheet" href="styles.css">
+  <script>
+    // Aplica o tema salvo antes de desenhar a página (evita piscar branco).
+    try {
+      const t = localStorage.getItem("helmutsGarage.tema");
+      if (t === "dark" || t === "light") document.documentElement.dataset.theme = t;
+    } catch {}
+  </script>
 </head>
 <body>
   <header class="top-header">
     <div class="brand"><span class="wrench">🔧</span> MECÂNICA <span>HELMUT'S GARAGE</span></div>
+    <button id="themeBtn" class="theme-btn" aria-label="Alternar modo escuro" title="Alternar modo escuro">🌙</button>
   </header>
 
   <nav class="tabs" id="tabs"></nav>
