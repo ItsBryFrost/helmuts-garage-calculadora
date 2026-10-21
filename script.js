@@ -145,7 +145,12 @@ const RECEITAS = {
   "d-suspensao": { aluminio: 10, aco: 10 },
   "d-ecu": { componente: 20, plastico: 10, aluminio: 10 },
   "d-filtro": { aluminio: 10, aco: 10, borracha: 10, sucata: 10 },
-  "d-escape": null, "d-coletor": null, "d-combustivel": null, "d-turbo": null, "d-intercooler": null, "d-embreagem": null,
+  "d-escape": { aco: 20 },
+  "d-coletor": { aco: 10 },
+  "d-combustivel": { aluminio: 10 },
+  "d-turbo": { aluminio: 15, aco: 15 },
+  "d-intercooler": { aluminio: 20 },
+  "d-embreagem": { aco: 20 },
 
   // Peças Classe C
   "c-freio": null, "c-suspensao": null, "c-ecu": null, "c-filtro": null, "c-escape": null,
