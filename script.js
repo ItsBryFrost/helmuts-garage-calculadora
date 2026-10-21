@@ -16,6 +16,7 @@ const EXPERIMENTAL = {
 // preco: valor fixo
 // min / max: faixa de preço — o mecânico escolhe quanto cobrar dentro da faixa
 // qtd: true permite escolher quantidade
+// kit: ["id1", "id2"] — combo: marcar este item bloqueia os itens listados (vale em qualquer categoria)
 
 function pecasClasse(letra, p) {
   const c = letra.toLowerCase();
@@ -66,7 +67,7 @@ const CATEGORIAS = [
     itens: [
       { id: "lataria", nome: "Reparo de Lataria", min: 45, max: 60 },
       { id: "motor", nome: "Reparo de Motor", min: 100, max: 130 },
-      { id: "lataria-motor", nome: "Reparo de Lataria + Motor", min: 140, max: 180 },
+      { id: "lataria-motor", nome: "Reparo de Lataria + Motor", min: 140, max: 180, kit: ["lataria", "motor"] },
       { id: "oleo", nome: "Troca de Óleo", min: 25, max: 35 }
     ]
   },
@@ -206,7 +207,7 @@ function criarCard(item, categoria, buscando) {
   if (buscando) notas.push(categoria);
   if (item.inclui) notas.push(`Inclui: ${item.inclui}`);
   if (ehFaixa(item)) notas.push(`faixa ${money(item.min)} – ${money(item.max)}`);
-  if (kit) notas.push(`incluído no ${kit.nome.replace(/^\S+\s/, "")}`);
+  if (kit) notas.push(`incluído no ${kit.nome.replace(/^[^\p{L}]+\s/u, "")}`);
   if (notas.length) {
     const sub = document.createElement("span");
     sub.className = "item-sub";
