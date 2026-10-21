@@ -121,8 +121,10 @@ const CATEGORIAS = [
 // Lista de materiais mostrada na barra de baixo.
 const MATERIAIS = [
   { id: "aluminio", nome: "Alumínio", icone: "🔩" },
+  { id: "aco", nome: "Aço", icone: "⛓️" },
   { id: "borracha", nome: "Borracha", icone: "🛞" },
   { id: "cobre", nome: "Cobre", icone: "⚡" },
+  { id: "componente", nome: "Componente", icone: "🔌" },
   { id: "plastico", nome: "Plástico", icone: "🧪" },
   { id: "sucata", nome: "Sucata", icone: "📦" }
 ];
@@ -139,8 +141,11 @@ const RECEITAS = {
   "oleo": null,             // Troca de Óleo
 
   // Peças Classe D
-  "d-freio": null, "d-suspensao": null, "d-ecu": null, "d-filtro": null, "d-escape": null,
-  "d-coletor": null, "d-combustivel": null, "d-turbo": null, "d-intercooler": null, "d-embreagem": null,
+  "d-freio": { aluminio: 10, aco: 10 },
+  "d-suspensao": { aluminio: 10, aco: 10 },
+  "d-ecu": { componente: 20, plastico: 10, aluminio: 10 },
+  "d-filtro": { aluminio: 10, aco: 10, borracha: 10, sucata: 10 },
+  "d-escape": null, "d-coletor": null, "d-combustivel": null, "d-turbo": null, "d-intercooler": null, "d-embreagem": null,
 
   // Peças Classe C
   "c-freio": null, "c-suspensao": null, "c-ecu": null, "c-filtro": null, "c-escape": null,
@@ -169,7 +174,7 @@ const RECEITAS = {
   "reboque": null,
 
   // Outros
-  "lockpick": null,
+  "lockpick": { aluminio: 3, aco: 2 },
   "lockpick-avancada": null
 };
 
