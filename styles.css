@@ -233,7 +233,18 @@ body::before {
 }
 .item:hover { border-color: var(--hover-border); }
 .item.selected { border-color: var(--brown); background: var(--selected-bg); }
-.item.locked { opacity: .5; cursor: not-allowed; }
+.item.locked, .item.unavailable { opacity: .5; cursor: not-allowed; }
+.item.unavailable input[type="checkbox"] { cursor: not-allowed; }
+.soon {
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: .5px;
+  color: var(--muted);
+  border: 1px dashed var(--muted);
+  border-radius: 4px;
+  padding: 3px 6px;
+  white-space: nowrap;
+}
 .item input[type="checkbox"] {
   appearance: none;
   width: 16px;

@@ -16,7 +16,8 @@ const EXPERIMENTAL = {
 // preco: valor fixo
 // min / max: faixa de preço — o mecânico escolhe quanto cobrar dentro da faixa
 // qtd: true permite escolher quantidade
-// kit: ["id1", "id2"] — combo: marcar este item bloqueia os itens listados (vale em qualquer categoria)
+// kit: ["id1", "id2"] — combo: não dá para marcar o combo junto com os itens listados (nos dois sentidos)
+// indisponivel: true — aparece como "EM BREVE" e não pode ser marcado (quando chegar, troque por um preço)
 
 function pecasClasse(letra, p) {
   const c = letra.toLowerCase();
@@ -25,7 +26,7 @@ function pecasClasse(letra, p) {
     { id: `${c}-freio`, nome: nome("Freio"), preco: p.freioSuspensao },
     { id: `${c}-suspensao`, nome: nome("Suspensão"), preco: p.freioSuspensao },
     { id: `${c}-ecu`, nome: nome("ECU"), preco: p.ecu },
-    { id: `${c}-filtro`, nome: nome("Filtro de ar"), preco: p.filtro },
+    { id: `${c}-filtro`, nome: nome("Filtro de Ar"), preco: p.filtro },
     { id: `${c}-escape`, nome: nome("Escape"), preco: p.escape },
     { id: `${c}-coletor`, nome: nome("Coletor"), preco: p.coletor },
     { id: `${c}-combustivel`, nome: nome("Combustível"), preco: p.combustivel },
@@ -98,6 +99,7 @@ const CATEGORIAS = [
     nome: "NITRO",
     itens: [
       { id: "nitro-garrafa", nome: "Garrafa Nitro Pequena", preco: 400, qtd: true },
+      { id: "nitro-garrafa-grande", nome: "Garrafa Nitro Grande", indisponivel: true },
       { id: "nitro-refil", nome: "Refil Nitro (Qualquer Tamanho)", min: 50, max: 70, qtd: true }
     ]
   },
@@ -110,7 +112,8 @@ const CATEGORIAS = [
   {
     nome: "OUTROS",
     itens: [
-      { id: "lockpick", nome: "Lockpick", preco: 60, qtd: true }
+      { id: "lockpick", nome: "Lockpick", preco: 60, qtd: true },
+      { id: "lockpick-avancada", nome: "Lockpick Avançada", preco: 120, qtd: true }
     ]
   }
 ];
@@ -145,21 +148,29 @@ function toast(msg) {
   toastTimer = setTimeout(() => el.classList.remove("show"), 2200);
 }
 
-// O pacote cobre o item se o item é uma das suas peças ou um pacote menor (ex.: Stage 3 cobre Stage 1 e 2).
-function cobre(pacote, item) {
-  if (!pacote.kit || pacote.id === item.id) return false;
-  return item.kit ? item.kit.every(p => pacote.kit.includes(p)) : pacote.kit.includes(item.id);
+// Peças que um item representa: um combo/pacote é a lista do kit, um item comum é ele mesmo.
+const partes = item => item.kit || [item.id];
+
+// O pacote cobre o item se todas as peças do item estão dentro dele (ex.: Stage 3 cobre ECU e Stage 1).
+const cobre = (pacote, item) => pacote.id !== item.id && !!pacote.kit && partes(item).every(p => pacote.kit.includes(p));
+
+// Itens selecionados que impedem marcar este (só com EXPERIMENTAL.travarKit).
+// Vale nos dois sentidos: um pacote bloqueia suas peças, e uma peça avulsa bloqueia os pacotes que a incluem.
+function conflitos(item) {
+  if (!EXPERIMENTAL.travarKit || selecao.has(item.id)) return [];
+  const minhas = partes(item);
+  return [...selecao.keys()]
+    .map(id => ITENS.get(id)?.item)
+    .filter(outro => outro && partes(outro).some(p => minhas.includes(p)));
 }
 
-// Pacote selecionado que já inclui este item (só com EXPERIMENTAL.travarKit).
-function kitQueBloqueia(id) {
-  if (!EXPERIMENTAL.travarKit) return null;
-  const item = ITENS.get(id).item;
-  for (const selId of selecao.keys()) {
-    const pacote = ITENS.get(selId)?.item;
-    if (pacote && cobre(pacote, item)) return pacote;
-  }
-  return null;
+const semEmoji = nome => nome.replace(/^[^\p{L}]+\s/u, "");
+
+function textoBloqueio(item, lista) {
+  const pacote = lista.find(o => cobre(o, item));
+  if (pacote) return `incluído no ${semEmoji(pacote.nome)}`;
+  const nomes = lista.map(o => semEmoji(o.nome));
+  return `desmarque ${nomes.slice(0, 2).join(", ")}${nomes.length > 2 ? ` +${nomes.length - 2}` : ""} para usar`;
 }
 
 function renderTabs() {
@@ -184,40 +195,47 @@ function renderTabs() {
   });
 }
 
-function criarCard(item, categoria, buscando) {
-  const sel = selecao.get(item.id);
-  const kit = kitQueBloqueia(item.id);
+// Funções que reaplicam o estado (marcado / bloqueado) em cada card visível.
+let syncCards = [];
 
+function criarCard(item, categoria, buscando) {
   const card = document.createElement("label");
-  card.className = "item" + (sel ? " selected" : "") + (kit ? " locked" : "");
+  card.className = "item";
 
   const check = document.createElement("input");
   check.type = "checkbox";
-  check.checked = !!sel;
-  check.disabled = !!kit;
 
   const info = document.createElement("span");
   info.className = "item-info";
   const nome = document.createElement("span");
   nome.className = "item-name";
   nome.textContent = item.nome;
-  info.appendChild(nome);
-
-  const notas = [];
-  if (buscando) notas.push(categoria);
-  if (item.inclui) notas.push(`Inclui: ${item.inclui}`);
-  if (ehFaixa(item)) notas.push(`faixa ${money(item.min)} – ${money(item.max)}`);
-  if (kit) notas.push(`incluído no ${kit.nome.replace(/^[^\p{L}]+\s/u, "")}`);
-  if (notas.length) {
-    const sub = document.createElement("span");
-    sub.className = "item-sub";
-    sub.textContent = notas.join(" · ");
-    info.appendChild(sub);
-  }
-
+  const sub = document.createElement("span");
+  sub.className = "item-sub";
+  info.append(nome, sub);
   card.append(check, info);
 
-  let precoInput;
+  const notasFixas = [];
+  if (buscando) notasFixas.push(categoria);
+  if (item.inclui) notasFixas.push(`Inclui: ${item.inclui}`);
+
+  // Item que ainda vai chegar: aparece na lista, mas não pode ser marcado.
+  if (item.indisponivel) {
+    card.classList.add("unavailable");
+    check.disabled = true;
+    sub.textContent = [...notasFixas, "indisponível no momento"].join(" · ");
+    const tag = document.createElement("span");
+    tag.className = "soon";
+    tag.textContent = "EM BREVE";
+    card.appendChild(tag);
+    return { card, sync: () => {} };
+  }
+
+  if (ehFaixa(item)) notasFixas.push(`faixa ${money(item.min)} – ${money(item.max)}`);
+
+  let precoInput, qtdInput;
+  const precoAtual = () => limitar(item, Number(precoInput?.value) || precoPadrao(item));
+
   if (ehFaixa(item)) {
     const wrap = document.createElement("span");
     wrap.className = "price-wrap";
@@ -228,19 +246,14 @@ function criarCard(item, categoria, buscando) {
     precoInput.min = item.min;
     precoInput.max = item.max;
     precoInput.step = "1";
-    precoInput.value = sel ? sel.preco : item.min;
     precoInput.title = "Valor cobrado";
-    precoInput.disabled = !!kit;
     precoInput.addEventListener("change", () => {
-      const v = limitar(item, parseInt(precoInput.value, 10) || item.min);
+      const v = precoAtual();
       precoInput.value = v;
-      const s = selecao.get(item.id) || { qtd: 1, preco: v };
+      const s = selecao.get(item.id) || { qtd: 1 };
       s.preco = v;
       selecao.set(item.id, s);
-      check.checked = true;
-      card.classList.add("selected");
-      renderTabs();
-      atualizarTotal();
+      atualizar();
     });
     wrap.appendChild(precoInput);
     card.appendChild(wrap);
@@ -252,57 +265,79 @@ function criarCard(item, categoria, buscando) {
   }
 
   if (item.qtd) {
-    const qtd = document.createElement("input");
-    qtd.className = "qty";
-    qtd.type = "number";
-    qtd.min = "0";
-    qtd.step = "1";
-    qtd.value = sel ? sel.qtd : 0;
-    qtd.title = "Quantidade";
-    qtd.disabled = !!kit;
-    qtd.addEventListener("input", () => {
-      const v = Math.max(0, parseInt(qtd.value || "0", 10) || 0);
+    qtdInput = document.createElement("input");
+    qtdInput.className = "qty";
+    qtdInput.type = "number";
+    qtdInput.min = "0";
+    qtdInput.step = "1";
+    qtdInput.title = "Quantidade";
+    qtdInput.addEventListener("input", () => {
+      const v = Math.max(0, parseInt(qtdInput.value || "0", 10) || 0);
       if (v > 0) {
-        const s = selecao.get(item.id) || { qtd: v, preco: limitar(item, Number(precoInput?.value) || precoPadrao(item)) };
+        const s = selecao.get(item.id) || { preco: precoAtual() };
         s.qtd = v;
         selecao.set(item.id, s);
       } else {
         selecao.delete(item.id);
       }
-      check.checked = v > 0;
-      card.classList.toggle("selected", v > 0);
-      renderTabs();
-      atualizarTotal();
+      atualizar();
     });
-    card.appendChild(qtd);
+    card.appendChild(qtdInput);
   }
 
   check.addEventListener("change", () => {
-    if (check.checked) {
-      const preco = limitar(item, Number(precoInput?.value) || precoPadrao(item));
-      selecao.set(item.id, { qtd: 1, preco });
-      if (item.kit && EXPERIMENTAL.travarKit) {
-        for (const id of [...selecao.keys()]) if (cobre(item, ITENS.get(id).item)) selecao.delete(id);
-      }
-    } else {
-      selecao.delete(item.id);
-    }
-    render();
+    if (check.checked) selecao.set(item.id, { qtd: 1, preco: precoAtual() });
+    else selecao.delete(item.id);
+    atualizar();
   });
 
-  return card;
+  function sync() {
+    const sel = selecao.get(item.id);
+    const bloq = conflitos(item);
+    const travado = bloq.length > 0;
+    card.classList.toggle("selected", !!sel);
+    card.classList.toggle("locked", travado);
+    check.checked = !!sel;
+    check.disabled = travado;
+    if (precoInput) {
+      precoInput.disabled = travado;
+      if (document.activeElement !== precoInput) precoInput.value = sel ? sel.preco : item.min;
+    }
+    if (qtdInput) {
+      qtdInput.disabled = travado;
+      if (document.activeElement !== qtdInput) qtdInput.value = sel ? sel.qtd : 0;
+    }
+    const notas = travado ? [...notasFixas, textoBloqueio(item, bloq)] : notasFixas;
+    sub.textContent = notas.join(" · ");
+    sub.classList.toggle("hidden", !notas.length);
+  }
+
+  sync();
+  return { card, sync };
 }
 
 function renderItems() {
   const busca = searchEl.value.trim().toLowerCase();
   itemsEl.innerHTML = "";
+  syncCards = [];
 
   const lista = busca
     ? CATEGORIAS.flatMap(cat => cat.itens.filter(i => i.nome.toLowerCase().includes(busca)).map(i => [i, cat.nome]))
     : CATEGORIAS.find(c => c.nome === abaAtual).itens.map(i => [i, abaAtual]);
 
-  lista.forEach(([item, cat]) => itemsEl.appendChild(criarCard(item, cat, !!busca)));
+  lista.forEach(([item, cat]) => {
+    const { card, sync } = criarCard(item, cat, !!busca);
+    syncCards.push(sync);
+    itemsEl.appendChild(card);
+  });
   $("empty").classList.toggle("hidden", lista.length !== 0);
+}
+
+// Depois de mudar a seleção: atualiza os cards no lugar (sem perder o foco do campo), as abas e o total.
+function atualizar() {
+  syncCards.forEach(sync => sync());
+  renderTabs();
+  atualizarTotal();
 }
 
 function linhasOrdem() {

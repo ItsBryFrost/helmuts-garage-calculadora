@@ -5,7 +5,7 @@ Para ligar/desligar, mude `true`/`false` no objeto `EXPERIMENTAL` no topo do `sc
 
 | Chave | Padrão | O que faz | Por que existe |
 |---|---|---|---|
-| `travarKit` | `true` | Marcar um "Kit Completo Classe X" desmarca e bloqueia as peças avulsas daquela classe. | No site original dava para marcar o kit **e** as peças, cobrando duas vezes. |
+| `travarKit` | `true` | Combos e pacotes (Stages, Kit Completo, Lataria + Motor) não podem ser marcados junto com os itens que incluem, **nos dois sentidos**: o pacote bloqueia as peças, e uma peça avulsa bloqueia os pacotes que a incluem. | No site original dava para marcar o kit **e** as peças, cobrando duas vezes. |
 | `historico` | `true` | SALVAR ORDEM guarda numa lista (até 100) e o botão HISTÓRICO permite reabrir ou excluir. | No original, salvar só guardava a última ordem e não havia como vê-la. |
 | `barraMateriais` | `false` | Mostra a barra de materiais (Alumínio, Borracha, Cobre, Plástico, Sucata). | No original os números eram fixos em 0 — não funcionava. Desligada até ter uso real. |
 | `idParaCopiar` | `true` | COPIAR também exige o Passaporte / ID. | No original o campo dizia "Obrigatório" mas COPIAR funcionava sem ele. |
