@@ -77,10 +77,15 @@ const CATEGORIAS = [
   {
     nome: "REPAROS PEÇAS",
     itens: [
+      { id: "rep-freio", nome: "Reparo de Freio", preco: 110, qtd: true },
+      { id: "rep-suspensao", nome: "Reparo de Suspensão", preco: 110, qtd: true },
       { id: "rep-ecu", nome: "Reparo de ECU", preco: 90, qtd: true },
-      { id: "rep-turbo-escape", nome: "Reparo de Turbo ou Escape", preco: 100, qtd: true },
       { id: "rep-filtro", nome: "Reparo de Filtro de Ar", preco: 110, qtd: true },
-      { id: "rep-coletor", nome: "Reparo de Coletor, Combustível ou Intercooler", preco: 140, qtd: true },
+      { id: "rep-escape", nome: "Reparo de Escape", preco: 100, qtd: true },
+      { id: "rep-coletor", nome: "Reparo de Coletor", preco: 140, qtd: true },
+      { id: "rep-combustivel", nome: "Reparo de Combustível", preco: 140, qtd: true },
+      { id: "rep-turbo", nome: "Reparo de Turbo", preco: 100, qtd: true },
+      { id: "rep-intercooler", nome: "Reparo de Intercooler", preco: 140, qtd: true },
       { id: "rep-embreagem", nome: "Reparo de Embreagem", preco: 140, qtd: true }
     ]
   },
@@ -163,11 +168,8 @@ const RECEITAS = {
   "b-coletor": null, "b-combustivel": null, "b-turbo": null, "b-intercooler": null, "b-embreagem": null,
 
   // Reparos Peças
-  "rep-ecu": null,          // Reparo de ECU
-  "rep-turbo-escape": null, // Reparo de Turbo ou Escape
-  "rep-filtro": null,       // Reparo de Filtro de Ar
-  "rep-coletor": null,      // Reparo de Coletor, Combustível ou Intercooler
-  "rep-embreagem": null,    // Reparo de Embreagem
+  "rep-freio": null, "rep-suspensao": null, "rep-ecu": null, "rep-filtro": null, "rep-escape": null,
+  "rep-coletor": null, "rep-combustivel": null, "rep-turbo": null, "rep-intercooler": null, "rep-embreagem": null,
 
   // Estética
   "pintura": null, "rodas": null, "aerofolio": null, "parachoque": null, "peca-estetica": null,
