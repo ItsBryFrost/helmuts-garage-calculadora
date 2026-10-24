@@ -95,7 +95,8 @@ const CATEGORIAS = [
       { id: "pintura", nome: "Pintura", preco: 200 },
       { id: "rodas", nome: "Rodas", preco: 215 },
       { id: "aerofolio", nome: "Aerofólio", preco: 150 },
-      { id: "parachoque", nome: "Para-Choque", preco: 150, qtd: true },
+      { id: "parachoque-dianteiro", nome: "Para-Choque Dianteiro", preco: 150 },
+      { id: "parachoque-traseiro", nome: "Para-Choque Traseiro", preco: 150 },
       { id: "peca-estetica", nome: "Peça Estética", preco: 150, qtd: true }
     ]
   },
@@ -177,11 +178,24 @@ const RECEITAS = {
   "b-coletor": null, "b-combustivel": null, "b-turbo": null, "b-intercooler": null, "b-embreagem": null,
 
   // Reparos Peças
-  "rep-freio": null, "rep-suspensao": null, "rep-ecu": null, "rep-filtro": null, "rep-escape": null,
-  "rep-coletor": null, "rep-combustivel": null, "rep-turbo": null, "rep-intercooler": null, "rep-embreagem": null,
+  "rep-freio": { sucata: 3, borracha: 2 },
+  "rep-suspensao": { sucata: 3, borracha: 2 },
+  "rep-ecu": { cobre: 3, plastico: 2, sucata: 2 },
+  "rep-filtro": { borracha: 3, plastico: 3, aluminio: 3 },
+  "rep-escape": { sucata: 4, aluminio: 4 },
+  "rep-coletor": { aluminio: 4, cobre: 4, sucata: 4 },
+  "rep-combustivel": { aluminio: 4, cobre: 4, sucata: 4 },
+  "rep-turbo": { sucata: 4, aluminio: 4 },
+  "rep-intercooler": { aluminio: 4, cobre: 4, sucata: 4 },
+  "rep-embreagem": { sucata: 4, aluminio: 4, borracha: 4 },
 
   // Estética
-  "pintura": null, "rodas": null, "aerofolio": null, "parachoque": null, "peca-estetica": null,
+  "pintura": { aluminio: 5, plastico: 5 },
+  "rodas": { aluminio: 20 },
+  "aerofolio": { aluminio: 5 },
+  "parachoque-dianteiro": { aluminio: 5 },
+  "parachoque-traseiro": { aluminio: 5 },
+  "peca-estetica": { aluminio: 3, plastico: 2 },
 
   // Nitro
   "nitro-garrafa": null,        // Garrafa Nitro Pequena
@@ -189,11 +203,11 @@ const RECEITAS = {
   "nitro-refil": null,          // Refil Nitro
 
   // Reboque
-  "reboque": null,
+  "reboque": {}, // serviço, não gasta material
 
   // Outros
   "lockpick": { aluminio: 3, aco: 2 },
-  "lockpick-avancada": null,
+  "lockpick-avancada": { aluminio: 9, aco: 6 },
   "kit-reparo-motor": { plastico: 10, aluminio: 20 }, // Kit de Reparo de Motor (cliente leva para consertar o motor na rua)
   "pneu": { borracha: 5 }                              // Pneu de Veículo (em breve)
 };
