@@ -174,8 +174,16 @@ const RECEITAS = {
   "c-embreagem": { aco: 30 },
 
   // Peças Classe B
-  "b-freio": null, "b-suspensao": null, "b-ecu": null, "b-filtro": null, "b-escape": null,
-  "b-coletor": null, "b-combustivel": null, "b-turbo": null, "b-intercooler": null, "b-embreagem": null,
+  "b-freio": { aluminio: 20, aco: 20 },
+  "b-suspensao": { aluminio: 20, aco: 20 },
+  "b-ecu": { componente: 40, plastico: 20, aluminio: 20 },
+  "b-filtro": { aluminio: 20, aco: 20, borracha: 20, sucata: 20 },
+  "b-escape": { aco: 40 },
+  "b-coletor": { aco: 20 },
+  "b-combustivel": { aluminio: 20 },
+  "b-turbo": { aluminio: 30, aco: 30 },
+  "b-intercooler": { aluminio: 40 },
+  "b-embreagem": { aco: 40 },
 
   // Reparos Peças
   "rep-freio": { sucata: 3, borracha: 2 },
