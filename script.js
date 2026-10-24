@@ -132,6 +132,7 @@ const MATERIAIS = [
   { id: "borracha", nome: "Borracha", icone: "🛞" },
   { id: "cobre", nome: "Cobre", icone: "⚡" },
   { id: "componente", nome: "Componente", icone: "🔌" },
+  { id: "oleo-motor", nome: "Óleo de Motor", icone: "🛢️" },
   { id: "plastico", nome: "Plástico", icone: "🧪" },
   { id: "sucata", nome: "Sucata", icone: "📦" }
 ];
@@ -145,7 +146,7 @@ const RECEITAS = {
   // Serviços Gerais
   "lataria": { sucata: 2, aluminio: 2 },          // Reparo de Lataria
   "motor": { sucata: 5, cobre: 3, aluminio: 2 },  // Reparo de Motor
-  "oleo": null,             // Troca de Óleo
+  "oleo": { "oleo-motor": 1 },                     // Troca de Óleo
 
   // Peças Classe D
   "d-freio": { aluminio: 10, aco: 10 },
