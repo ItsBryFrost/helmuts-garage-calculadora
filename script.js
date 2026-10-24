@@ -143,8 +143,8 @@ const MATERIAIS = [
 // Pacotes (Stages, Kit Completo) e combos (Lataria + Motor) somam as peças sozinhos — não precisam estar aqui.
 const RECEITAS = {
   // Serviços Gerais
-  "lataria": null,          // Reparo de Lataria
-  "motor": null,            // Reparo de Motor
+  "lataria": { sucata: 2, aluminio: 2 },          // Reparo de Lataria
+  "motor": { sucata: 5, cobre: 3, aluminio: 2 },  // Reparo de Motor
   "oleo": null,             // Troca de Óleo
 
   // Peças Classe D
@@ -160,8 +160,16 @@ const RECEITAS = {
   "d-embreagem": { aco: 20 },
 
   // Peças Classe C
-  "c-freio": null, "c-suspensao": null, "c-ecu": null, "c-filtro": null, "c-escape": null,
-  "c-coletor": null, "c-combustivel": null, "c-turbo": null, "c-intercooler": null, "c-embreagem": null,
+  "c-freio": { aluminio: 15, aco: 15 },
+  "c-suspensao": { aluminio: 15, aco: 15 },
+  "c-ecu": { componente: 30, plastico: 15, aluminio: 15 },
+  "c-filtro": { aluminio: 15, aco: 15, borracha: 15, sucata: 15 },
+  "c-escape": { aco: 30 },
+  "c-coletor": { aco: 15 },
+  "c-combustivel": { aluminio: 15 },
+  "c-turbo": { aluminio: 23, aco: 23 },
+  "c-intercooler": { aluminio: 30 },
+  "c-embreagem": { aco: 30 },
 
   // Peças Classe B
   "b-freio": null, "b-suspensao": null, "b-ecu": null, "b-filtro": null, "b-escape": null,
