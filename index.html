@@ -14,9 +14,17 @@
   </script>
 </head>
 <body>
-  <header class="top-header">
-    <div class="brand"><span class="wrench">🔧</span> MECÂNICA <span>HELMUT'S GARAGE</span></div>
-    <button id="themeBtn" class="theme-btn" aria-label="Alternar modo escuro" title="Alternar modo escuro">🌙</button>
+  <header class="top-header" id="topHeader">
+    <div class="brand">
+      <img id="brandLogo" class="brand-logo hidden" alt="">
+      <span id="brandWrench" class="wrench">🔧</span>
+      <span id="brandPrefixo">MECÂNICA</span>
+      <span id="brandNome" class="brand-nome">HELMUT'S GARAGE</span>
+    </div>
+    <div class="header-actions">
+      <button id="customBtn" class="header-btn" aria-label="Personalizar visual" title="Personalizar visual">🎨</button>
+      <button id="themeBtn" class="header-btn" aria-label="Alternar modo escuro" title="Alternar modo escuro">🌙</button>
+    </div>
   </header>
 
   <nav class="tabs" id="tabs"></nav>
@@ -62,6 +70,59 @@
         <button id="historyClose" class="close" aria-label="Fechar">✕</button>
       </div>
       <div id="historyList" class="history-list"></div>
+    </div>
+  </div>
+
+  <!-- Personalizar visual (Project Comunity) -->
+  <div id="customPanel" class="overlay hidden">
+    <div class="panel" role="dialog" aria-label="Personalizar visual">
+      <div class="panel-head">
+        <strong>Personalizar visual</strong>
+        <button id="customClose" class="close" aria-label="Fechar">✕</button>
+      </div>
+      <div class="custom-body">
+        <p class="custom-note">
+          Monte o visual da sua oficina e compartilhe o link com seus mecânicos.
+          <b>Preços e materiais são sempre os oficiais</b> e não mudam pelo link.
+        </p>
+
+        <div class="custom-grid">
+          <label class="field">
+            <span>Texto antes do nome</span>
+            <input id="cfgPrefixo" type="text" maxlength="30" placeholder="MECÂNICA">
+          </label>
+          <label class="field">
+            <span>Nome da oficina</span>
+            <input id="cfgNome" type="text" maxlength="40" placeholder="HELMUT'S GARAGE">
+          </label>
+          <label class="field">
+            <span>Cor principal</span>
+            <span class="color-row"><input id="cfgCor" type="color"><code id="cfgCorHex"></code></span>
+          </label>
+          <label class="field">
+            <span>Cor do topo</span>
+            <span class="color-row"><input id="cfgTopo" type="color"><code id="cfgTopoHex"></code></span>
+          </label>
+          <label class="field wide">
+            <span>Logo (link da imagem)</span>
+            <input id="cfgLogo" type="url" placeholder="https://… (opcional)">
+          </label>
+          <label class="field wide">
+            <span>Banner do topo (link da imagem)</span>
+            <input id="cfgBanner" type="url" placeholder="https://… (opcional)">
+          </label>
+          <label class="field wide">
+            <span>Papel de parede (link da imagem)</span>
+            <input id="cfgFundo" type="url" placeholder="https://… (opcional)">
+          </label>
+        </div>
+        <p class="custom-hint">Imagens precisam ser um link que começa com <code>https://</code> (ex.: Imgur ou Discord). Clique com o botão direito na imagem → "Copiar endereço da imagem".</p>
+
+        <div class="custom-actions">
+          <button id="cfgReset" class="btn clear">RESTAURAR PADRÃO</button>
+          <button id="cfgCopy" class="btn save">COPIAR LINK DA OFICINA</button>
+        </div>
+      </div>
     </div>
   </div>
 

@@ -1,7 +1,20 @@
 // ================= CONFIGURAÇÃO =================
 
-const LOJA = "HELMUT'S GARAGE";
 const DESCONTOS = [0, 5, 10, 15, 20, 25];
+
+// Visual padrão (Helmut's Garage). Outras oficinas trocam SÓ o visual pelo link
+// gerado no botão 🎨 — preços, materiais e itens vêm sempre deste arquivo.
+const VISUAL_PADRAO = {
+  prefixo: "MECÂNICA",
+  nome: "HELMUT'S GARAGE",
+  cor: "#996127",  // cor principal (botões, preços, destaques)
+  topo: "#4b535b", // cor do topo
+  logo: "",        // link de imagem (https://…)
+  banner: "",      // imagem de fundo do topo
+  fundo: ""        // papel de parede da página
+};
+// Letra usada no link para cada campo (ex.: #n=BENNYS&c=e63946).
+const CHAVES_LINK = { prefixo: "p", nome: "n", cor: "c", topo: "t", logo: "l", banner: "b", fundo: "f" };
 
 // Recursos experimentais (temporários) — ver NOTAS-EXPERIMENTAIS.md.
 // Troque true/false para ligar ou desligar cada um.
@@ -531,7 +544,7 @@ function textoOrdem() {
   const cliente = clientNameEl.value.trim();
   const passaporte = passportEl.value.trim();
 
-  let t = `ORDEM DE SERVIÇO — ${LOJA}\n`;
+  let t = `ORDEM DE SERVIÇO — ${visual.nome}\n`;
   t += "============================\n";
   if (cliente) t += `Cliente: ${cliente}\n`;
   if (passaporte) t += `Passaporte / ID: ${passaporte}\n`;
@@ -591,19 +604,25 @@ $("clearBtn").onclick = () => {
 
 // ----- Salvar / histórico -----
 
-const CHAVE_HISTORICO = "helmutsGarage.historico";
-const CHAVE_ULTIMA = "helmutsGarage.ultimaOrdem";
+// Cada oficina guarda o próprio histórico (a Helmut's mantém a chave antiga, sem perder ordens salvas).
+function prefixoDados() {
+  if (visual.nome === VISUAL_PADRAO.nome) return "helmutsGarage";
+  const slug = visual.nome.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+  return `oficina.${slug || "sem-nome"}`;
+}
+const chaveHistorico = () => `${prefixoDados()}.historico`;
+const chaveUltima = () => `${prefixoDados()}.ultimaOrdem`;
 
 function lerHistorico() {
   try {
-    return JSON.parse(localStorage.getItem(CHAVE_HISTORICO)) || [];
+    return JSON.parse(localStorage.getItem(chaveHistorico())) || [];
   } catch {
     return [];
   }
 }
 
 function gravarHistorico(lista) {
-  localStorage.setItem(CHAVE_HISTORICO, JSON.stringify(lista));
+  localStorage.setItem(chaveHistorico(), JSON.stringify(lista));
 }
 
 $("saveBtn").onclick = () => {
@@ -623,7 +642,7 @@ $("saveBtn").onclick = () => {
     if (EXPERIMENTAL.historico) {
       gravarHistorico([ordem, ...lerHistorico()].slice(0, 100));
     } else {
-      localStorage.setItem(CHAVE_ULTIMA, JSON.stringify(ordem));
+      localStorage.setItem(chaveUltima(), JSON.stringify(ordem));
     }
     toast("Ordem salva neste navegador!");
   } catch {
@@ -692,7 +711,9 @@ $("historyPanel").addEventListener("click", e => {
   if (e.target.id === "historyPanel") fecharHistorico();
 });
 document.addEventListener("keydown", e => {
-  if (e.key === "Escape") fecharHistorico();
+  if (e.key !== "Escape") return;
+  fecharHistorico();
+  if (!$("customPanel").classList.contains("hidden")) fecharPersonalizar();
 });
 
 // ----- Modo escuro -----
@@ -715,6 +736,174 @@ $("themeBtn").onclick = () => {
 };
 temaSistema.addEventListener("change", atualizarBotaoTema);
 atualizarBotaoTema();
+
+// ----- Visual da oficina (Project Comunity) -----
+// O visual vem do link (#p=…&n=…&c=…). Só os campos de VISUAL_PADRAO são lidos, e cada valor é
+// validado — não existe campo de preço ou material, então o link não tem como alterá-los.
+
+const limparTexto = (v, max) => String(v ?? "").replace(/\s+/g, " ").trim().slice(0, max);
+
+function limparCor(v) {
+  const m = String(v ?? "").trim().match(/^#?([0-9a-f]{6})$/i);
+  return m ? `#${m[1].toLowerCase()}` : "";
+}
+
+// Só aceita imagens https:// (o navegador já escapa aspas e espaços no href).
+function limparLink(v) {
+  const s = String(v ?? "").trim();
+  if (!s || s.length > 800) return "";
+  try {
+    const url = new URL(s);
+    return url.protocol === "https:" ? url.href : "";
+  } catch {
+    return "";
+  }
+}
+
+function normalizarVisual(bruto) {
+  const texto = (campo, max) => (bruto[campo] === undefined ? VISUAL_PADRAO[campo] : limparTexto(bruto[campo], max));
+  return {
+    prefixo: texto("prefixo", 30),
+    nome: texto("nome", 40) || VISUAL_PADRAO.nome,
+    cor: limparCor(bruto.cor) || VISUAL_PADRAO.cor,
+    topo: limparCor(bruto.topo) || VISUAL_PADRAO.topo,
+    logo: limparLink(bruto.logo),
+    banner: limparLink(bruto.banner),
+    fundo: limparLink(bruto.fundo)
+  };
+}
+
+function lerVisualDoLink() {
+  const params = new URLSearchParams(location.hash.slice(1));
+  const bruto = {};
+  for (const [campo, chave] of Object.entries(CHAVES_LINK)) {
+    if (params.has(chave)) bruto[campo] = params.get(chave);
+  }
+  return normalizarVisual(bruto);
+}
+
+// Link com só o que é diferente do padrão (sem nada = visual da Helmut's).
+function linkDoVisual(v) {
+  const params = new URLSearchParams();
+  for (const [campo, chave] of Object.entries(CHAVES_LINK)) {
+    if (v[campo] !== VISUAL_PADRAO[campo]) params.set(chave, campo === "cor" || campo === "topo" ? v[campo].slice(1) : v[campo]);
+  }
+  const base = location.origin + location.pathname;
+  const extra = params.toString();
+  return extra ? `${base}#${extra}` : base;
+}
+
+// Texto preto ou branco, o que tiver mais contraste com a cor principal.
+function corDoTexto(hex) {
+  const [r, g, b] = [1, 3, 5].map(i => parseInt(hex.slice(i, i + 2), 16) / 255)
+    .map(c => (c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4));
+  return 0.2126 * r + 0.7152 * g + 0.0722 * b > 0.4 ? "#1b1b1b" : "#ffffff";
+}
+
+function aplicarVisual(v) {
+  const raiz = document.documentElement.style;
+  const topo = $("topHeader");
+
+  $("brandPrefixo").textContent = v.prefixo;
+  $("brandPrefixo").classList.toggle("hidden", !v.prefixo);
+  $("brandNome").textContent = v.nome;
+  document.title = v.nome === VISUAL_PADRAO.nome ? "Calculadora Helmut's Garage" : `Calculadora ${v.nome}`;
+
+  if (v.cor !== VISUAL_PADRAO.cor) {
+    const clara = `color-mix(in srgb, ${v.cor} 72%, white)`;
+    raiz.setProperty("--accent", v.cor);
+    raiz.setProperty("--accent-light", clara);
+    raiz.setProperty("--accent-dark", clara);
+    raiz.setProperty("--on-accent", corDoTexto(v.cor));
+  } else {
+    ["--accent", "--accent-light", "--accent-dark", "--on-accent"].forEach(p => raiz.removeProperty(p));
+  }
+  if (v.topo !== VISUAL_PADRAO.topo) raiz.setProperty("--header", v.topo);
+  else raiz.removeProperty("--header");
+
+  const logo = $("brandLogo");
+  logo.onerror = () => {
+    logo.classList.add("hidden");
+    $("brandWrench").classList.remove("hidden");
+  };
+  if (v.logo) logo.src = v.logo;
+  else logo.removeAttribute("src");
+  logo.classList.toggle("hidden", !v.logo);
+  $("brandWrench").classList.toggle("hidden", !!v.logo);
+
+  topo.style.setProperty("--banner", v.banner ? `url(${JSON.stringify(v.banner)})` : "none");
+  topo.classList.toggle("has-banner", !!v.banner);
+  // Topo de cor clara (e sem banner, que já escurece): texto escuro para dar leitura.
+  topo.classList.toggle("header-light", !v.banner && corDoTexto(v.topo) !== "#ffffff");
+  document.body.style.setProperty("--wallpaper", v.fundo ? `url(${JSON.stringify(v.fundo)})` : "none");
+  document.body.classList.toggle("has-wallpaper", !!v.fundo);
+}
+
+let visual = lerVisualDoLink();
+
+const CAMPOS_VISUAL = {
+  prefixo: "cfgPrefixo", nome: "cfgNome", cor: "cfgCor", topo: "cfgTopo",
+  logo: "cfgLogo", banner: "cfgBanner", fundo: "cfgFundo"
+};
+
+function preencherCampos(v) {
+  for (const [campo, id] of Object.entries(CAMPOS_VISUAL)) $(id).value = v[campo];
+  marcarCampos();
+}
+
+function lerCampos() {
+  const bruto = {};
+  for (const [campo, id] of Object.entries(CAMPOS_VISUAL)) bruto[campo] = $(id).value;
+  return normalizarVisual(bruto);
+}
+
+// Mostra o código da cor e marca links de imagem inválidos.
+function marcarCampos() {
+  $("cfgCorHex").textContent = $("cfgCor").value;
+  $("cfgTopoHex").textContent = $("cfgTopo").value;
+  ["cfgLogo", "cfgBanner", "cfgFundo"].forEach(id => {
+    const el = $(id);
+    el.classList.toggle("invalid", !!el.value.trim() && !limparLink(el.value));
+  });
+}
+
+function fecharPersonalizar() {
+  aplicarVisual(visual); // desfaz a prévia se o link não foi copiado
+  $("customPanel").classList.add("hidden");
+}
+
+$("customBtn").onclick = () => {
+  preencherCampos(visual);
+  $("customPanel").classList.remove("hidden");
+};
+$("customClose").onclick = fecharPersonalizar;
+$("customPanel").addEventListener("click", e => {
+  if (e.target.id === "customPanel") fecharPersonalizar();
+});
+$("customPanel").addEventListener("input", () => {
+  marcarCampos();
+  aplicarVisual(lerCampos());
+});
+$("cfgReset").onclick = () => {
+  preencherCampos(VISUAL_PADRAO);
+  aplicarVisual(VISUAL_PADRAO);
+};
+$("cfgCopy").onclick = async () => {
+  visual = lerCampos();
+  const link = linkDoVisual(visual);
+  history.replaceState(null, "", link);
+  aplicarVisual(visual);
+  $("customPanel").classList.add("hidden");
+  toast((await copiarTexto(link)) ? "Link copiado! Envie para seus mecânicos." : "Copie o link da barra de endereço.");
+};
+
+// Colar outro link de oficina na mesma aba troca o visual.
+window.addEventListener("hashchange", () => {
+  visual = lerVisualDoLink();
+  aplicarVisual(visual);
+});
+
+aplicarVisual(visual);
 
 // ----- Início -----
 

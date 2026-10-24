@@ -21,6 +21,18 @@ Para cadastrar, edite **RECEITAS** no `script.js`: `null` = ainda não cadastrad
 Enquanto houver item marcado sem cadastro, a barra mostra um aviso.
 A lista de materiais em si fica em **MATERIAIS**, logo acima.
 
+## Visual de outras oficinas (Project Comunity)
+
+Outras oficinas do servidor podem usar a calculadora com o visual delas, sem mexer no código:
+
+1. Abra o site e clique em 🎨 no topo.
+2. Troque nome, cores, logo, banner do topo e papel de parede (imagens por link `https://`).
+3. Clique em **COPIAR LINK DA OFICINA** e mande o link para os mecânicos.
+
+O visual fica todo dentro do link (depois do `#`). **Preços, itens e materiais não fazem parte do link**
+e sempre vêm deste repositório. Cada oficina tem o próprio histórico de ordens no navegador.
+O link sem nada depois do `#` é o visual padrão da Helmut's Garage (definido em `VISUAL_PADRAO` no `script.js`).
+
 ## Tema
 
 O botão 🌙 / ☀️ no topo alterna o modo escuro. Sem escolha salva, o site segue o tema do sistema.
