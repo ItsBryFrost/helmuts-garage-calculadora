@@ -65,61 +65,70 @@ const CATEGORIAS = [
   {
     nome: "SERVIÇOS GERAIS",
     itens: [
-      { id: "lataria", nome: "Reparo de Lataria", preco: 60 },
-      { id: "motor", nome: "Reparo de Motor", preco: 130 },
-      { id: "lataria-motor", nome: "Reparo de Lataria + Motor", preco: 190, kit: ["lataria", "motor"] },
-      { id: "oleo", nome: "Troca de Óleo", preco: 35 }
+      { id: "lataria", nome: "Reparo de Lataria", preco: 100 },
+      { id: "motor", nome: "Reparo de Motor", preco: 175 },
+      { id: "lataria-motor", nome: "Reparo de Lataria + Motor", preco: 275, kit: ["lataria", "motor"] },
+      { id: "oleo", nome: "Troca de Óleo", preco: 50 }
     ]
   },
-  pecasClasse("D", { freioSuspensao: 180, ecu: 360, filtro: 360, escape: 180, coletor: 90, combustivel: 90, turbo: 270, intercooler: 180, embreagem: 180 }),
-  pecasClasse("C", { freioSuspensao: 270, ecu: 540, filtro: 540, escape: 270, coletor: 135, combustivel: 135, turbo: 415, intercooler: 270, embreagem: 270 }),
-  pecasClasse("B", { freioSuspensao: 360, ecu: 720, filtro: 720, escape: 360, coletor: 180, combustivel: 180, turbo: 540, intercooler: 360, embreagem: 360 }),
+  pecasClasse("D", { freioSuspensao: 210, ecu: 350, filtro: 350, escape: 210, coletor: 140, combustivel: 140, turbo: 280, intercooler: 210, embreagem: 210 }),
+  pecasClasse("C", { freioSuspensao: 280, ecu: 490, filtro: 490, escape: 280, coletor: 175, combustivel: 175, turbo: 390, intercooler: 280, embreagem: 280 }),
+  pecasClasse("B", { freioSuspensao: 350, ecu: 630, filtro: 630, escape: 350, coletor: 210, combustivel: 210, turbo: 490, intercooler: 350, embreagem: 350 }),
   {
     nome: "REPAROS PEÇAS",
     itens: [
-      { id: "rep-freio", nome: "Reparo de Freio", preco: 110, qtd: true },
-      { id: "rep-suspensao", nome: "Reparo de Suspensão", preco: 110, qtd: true },
-      { id: "rep-ecu", nome: "Reparo de ECU", preco: 90, qtd: true },
-      { id: "rep-filtro", nome: "Reparo de Filtro de Ar", preco: 110, qtd: true },
-      { id: "rep-escape", nome: "Reparo de Escape", preco: 100, qtd: true },
-      { id: "rep-coletor", nome: "Reparo de Coletor", preco: 140, qtd: true },
-      { id: "rep-combustivel", nome: "Reparo de Combustível", preco: 140, qtd: true },
-      { id: "rep-turbo", nome: "Reparo de Turbo", preco: 100, qtd: true },
-      { id: "rep-intercooler", nome: "Reparo de Intercooler", preco: 140, qtd: true },
-      { id: "rep-embreagem", nome: "Reparo de Embreagem", preco: 140, qtd: true }
+      { id: "rep-freio", nome: "Reparo de Freio", preco: 95, qtd: true },
+      { id: "rep-suspensao", nome: "Reparo de Suspensão", preco: 95, qtd: true },
+      { id: "rep-ecu", nome: "Reparo de ECU", preco: 110, qtd: true },
+      { id: "rep-filtro", nome: "Reparo de Filtro de Ar", preco: 125, qtd: true },
+      { id: "rep-escape", nome: "Reparo de Escape", preco: 115, qtd: true },
+      { id: "rep-coletor", nome: "Reparo de Coletor", preco: 145, qtd: true },
+      { id: "rep-combustivel", nome: "Reparo de Combustível", preco: 145, qtd: true },
+      { id: "rep-turbo", nome: "Reparo de Turbo", preco: 115, qtd: true },
+      { id: "rep-intercooler", nome: "Reparo de Intercooler", preco: 145, qtd: true },
+      { id: "rep-embreagem", nome: "Reparo de Embreagem", preco: 145, qtd: true }
     ]
   },
   {
     nome: "ESTÉTICA",
     itens: [
-      { id: "pintura", nome: "Pintura", preco: 200 },
-      { id: "rodas", nome: "Rodas", preco: 215 },
-      { id: "aerofolio", nome: "Aerofólio", preco: 150 },
-      { id: "parachoque-dianteiro", nome: "Para-Choque Dianteiro", preco: 150 },
-      { id: "parachoque-traseiro", nome: "Para-Choque Traseiro", preco: 150 },
-      { id: "peca-estetica", nome: "Peça Estética", preco: 150, qtd: true }
+      { id: "pintura", nome: "Lata de Tinta", preco: 140 },
+      { id: "rodas", nome: "Jogo de Rodas", preco: 210 },
+      { id: "aerofolio", nome: "Aerofólio", preco: 105 },
+      { id: "parachoque-dianteiro", nome: "Para-Choque Dianteiro", preco: 105 },
+      { id: "parachoque-traseiro", nome: "Para-Choque Traseiro", preco: 105 },
+      { id: "peca-estetica", nome: "Peça Estética", preco: 105, qtd: true }
     ]
   },
   {
     nome: "NITRO",
     itens: [
-      { id: "nitro-garrafa", nome: "Garrafa Nitro Pequena", preco: 400, qtd: true },
+      { id: "nitro-garrafa", nome: "Garrafa Nitro Pequena", preco: 350, qtd: true },
       { id: "nitro-garrafa-grande", nome: "Garrafa Nitro Grande", indisponivel: true },
-      { id: "nitro-refil", nome: "Refil Nitro (Qualquer Tamanho)", preco: 70, qtd: true }
+      { id: "nitro-refil", nome: "Refil Nitro (Qualquer Tamanho)", preco: 95, qtd: true }
     ]
   },
   {
     nome: "REBOQUE",
     itens: [
-      { id: "reboque", nome: "Reboque", preco: 100 }
+      { id: "reboque-ls", nome: "Reboque Los Santos", preco: 80 },
+      { id: "reboque-sandy", nome: "Reboque Sandy / Grape", preco: 100 },
+      { id: "reboque-paleto", nome: "Reboque Paleto", preco: 140 }
+    ]
+  },
+  {
+    nome: "LIMPEZA",
+    itens: [
+      { id: "cera", nome: "Cera Automotiva", preco: 75, qtd: true },
+      { id: "cera-profissional", nome: "Cera Profissional", preco: 145, qtd: true }
     ]
   },
   {
     nome: "OUTROS",
     itens: [
-      { id: "lockpick", nome: "Lockpick", preco: 60, qtd: true },
-      { id: "lockpick-avancada", nome: "Lockpick Avançada", preco: 120, qtd: true },
-      { id: "kit-reparo-motor", nome: "Kit de Reparo de Motor", preco: 265, qtd: true },
+      { id: "lockpick", nome: "Lockpick", preco: 80, qtd: true },
+      { id: "lockpick-avancada", nome: "Lockpick Avançada", preco: 170, qtd: true },
+      { id: "kit-reparo-motor", nome: "Kit de Reparo de Motor", preco: 280, qtd: true },
       { id: "pneu", nome: "Pneu de Veículo", indisponivel: true } // sem preço ainda — quando tiver: preco: X, qtd: true
     ]
   }
@@ -211,7 +220,11 @@ const RECEITAS = {
   "nitro-refil": null,          // Refil Nitro
 
   // Reboque
-  "reboque": {}, // serviço, não gasta material
+  "reboque-ls": {}, "reboque-sandy": {}, "reboque-paleto": {}, // serviço, não gasta material
+
+  // Limpeza
+  "cera": { aluminio: 2, plastico: 3 }, // Cera Automotiva
+  "cera-profissional": null,            // Cera Profissional
 
   // Outros
   "lockpick": { aluminio: 3, aco: 2 },
