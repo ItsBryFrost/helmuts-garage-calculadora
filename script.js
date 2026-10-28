@@ -225,7 +225,7 @@ const RECEITAS = {
 
   // Limpeza
   "cera": { aluminio: 2, plastico: 3 }, // Cera Automotiva
-  "cera-profissional": null,            // Cera Profissional
+  "cera-profissional": { aluminio: 4, plastico: 6 }, // Cera Profissional (a "cera premium")
 
   // Outros
   "lockpick": { aluminio: 3, aco: 2 },
