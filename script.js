@@ -129,6 +129,7 @@ const CATEGORIAS = [
       { id: "lockpick", nome: "Lockpick", preco: 80, qtd: true },
       { id: "lockpick-avancada", nome: "Lockpick Avançada", preco: 170, qtd: true },
       { id: "kit-reparo-motor", nome: "Kit de Reparo de Motor", preco: 280, qtd: true },
+      { id: "cinto-6-pontas", nome: "Cinto 6 Pontas", preco: 270, qtd: true },
       { id: "pneu", nome: "Pneu de Veículo", indisponivel: true } // sem preço ainda — quando tiver: preco: X, qtd: true
     ]
   }
@@ -230,6 +231,7 @@ const RECEITAS = {
   "lockpick": { aluminio: 3, aco: 2 },
   "lockpick-avancada": { aluminio: 9, aco: 6 },
   "kit-reparo-motor": { plastico: 10, aluminio: 20 }, // Kit de Reparo de Motor (cliente leva para consertar o motor na rua)
+  "cinto-6-pontas": null,                              // Cinto 6 Pontas (materiais ainda não informados)
   "pneu": { borracha: 5 }                              // Pneu de Veículo (em breve)
 };
 
