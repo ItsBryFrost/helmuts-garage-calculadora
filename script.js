@@ -231,7 +231,7 @@ const RECEITAS = {
   "lockpick": { aluminio: 3, aco: 2 },
   "lockpick-avancada": { aluminio: 9, aco: 6 },
   "kit-reparo-motor": { plastico: 10, aluminio: 20 }, // Kit de Reparo de Motor (cliente leva para consertar o motor na rua)
-  "cinto-6-pontas": null,                              // Cinto 6 Pontas (materiais ainda não informados)
+  "cinto-6-pontas": { plastico: 10, aco: 5, borracha: 5 }, // Cinto 6 Pontas
   "pneu": { borracha: 5 }                              // Pneu de Veículo (em breve)
 };
 
