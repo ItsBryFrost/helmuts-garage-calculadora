@@ -92,7 +92,7 @@ const CATEGORIAS = [
   {
     nome: "ESTÉTICA",
     itens: [
-      { id: "pintura", nome: "Lata de Tinta", preco: 140 },
+      { id: "pintura", nome: "Lata de Tinta", preco: 140, qtd: true },
       { id: "rodas", nome: "Jogo de Rodas", preco: 210 },
       { id: "aerofolio", nome: "Aerofólio", preco: 105 },
       { id: "parachoque-dianteiro", nome: "Para-Choque Dianteiro", preco: 105 },
