@@ -68,36 +68,38 @@ const CATEGORIAS = [
       { id: "lataria", nome: "Reparo de Lataria", preco: 100 },
       { id: "motor", nome: "Reparo de Motor", preco: 175 },
       { id: "lataria-motor", nome: "Reparo de Lataria + Motor", preco: 275, kit: ["lataria", "motor"] },
-      { id: "oleo", nome: "Troca de Óleo", preco: 50 }
+      { id: "oleo", nome: "Troca de Óleo", preco: 50 },
+      { id: "troca-pneu", nome: "Troca de Pneu", preco: 100, qtd: true }
     ]
   },
-  pecasClasse("D", { freioSuspensao: 210, ecu: 350, filtro: 350, escape: 210, coletor: 140, combustivel: 140, turbo: 280, intercooler: 210, embreagem: 210 }),
-  pecasClasse("C", { freioSuspensao: 280, ecu: 490, filtro: 490, escape: 280, coletor: 175, combustivel: 175, turbo: 390, intercooler: 280, embreagem: 280 }),
-  pecasClasse("B", { freioSuspensao: 350, ecu: 630, filtro: 630, escape: 350, coletor: 210, combustivel: 210, turbo: 490, intercooler: 350, embreagem: 350 }),
+  pecasClasse("D", { freioSuspensao: 230, ecu: 465, filtro: 465, escape: 230, coletor: 140, combustivel: 140, turbo: 350, intercooler: 230, embreagem: 230 }),
+  pecasClasse("C", { freioSuspensao: 345, ecu: 600, filtro: 600, escape: 330, coletor: 175, combustivel: 175, turbo: 450, intercooler: 345, embreagem: 345 }),
+  pecasClasse("B", { freioSuspensao: 400, ecu: 830, filtro: 830, escape: 450, coletor: 220, combustivel: 220, turbo: 590, intercooler: 450, embreagem: 450 }),
+  pecasClasse("A", { freioSuspensao: 830, ecu: 1560, filtro: 1560, escape: 900, coletor: 430, combustivel: 440, turbo: 1080, intercooler: 900, embreagem: 900 }),
   {
     nome: "REPAROS PEÇAS",
     itens: [
-      { id: "rep-freio", nome: "Reparo de Freio", preco: 95, qtd: true },
-      { id: "rep-suspensao", nome: "Reparo de Suspensão", preco: 95, qtd: true },
-      { id: "rep-ecu", nome: "Reparo de ECU", preco: 110, qtd: true },
-      { id: "rep-filtro", nome: "Reparo de Filtro de Ar", preco: 125, qtd: true },
-      { id: "rep-escape", nome: "Reparo de Escape", preco: 115, qtd: true },
-      { id: "rep-coletor", nome: "Reparo de Coletor", preco: 145, qtd: true },
-      { id: "rep-combustivel", nome: "Reparo de Combustível", preco: 145, qtd: true },
-      { id: "rep-turbo", nome: "Reparo de Turbo", preco: 115, qtd: true },
-      { id: "rep-intercooler", nome: "Reparo de Intercooler", preco: 145, qtd: true },
-      { id: "rep-embreagem", nome: "Reparo de Embreagem", preco: 145, qtd: true }
+      { id: "rep-freio", nome: "Reparo de Freio", preco: 60, qtd: true },
+      { id: "rep-suspensao", nome: "Reparo de Suspensão", preco: 60, qtd: true },
+      { id: "rep-ecu", nome: "Reparo de ECU", preco: 80, qtd: true },
+      { id: "rep-filtro", nome: "Reparo de Filtro de Ar", preco: 105, qtd: true },
+      { id: "rep-escape", nome: "Reparo de Escape", preco: 95, qtd: true },
+      { id: "rep-coletor", nome: "Reparo de Coletor", preco: 140, qtd: true },
+      { id: "rep-combustivel", nome: "Reparo de Combustível", preco: 140, qtd: true },
+      { id: "rep-turbo", nome: "Reparo de Turbo", preco: 95, qtd: true },
+      { id: "rep-intercooler", nome: "Reparo de Intercooler", preco: 140, qtd: true },
+      { id: "rep-embreagem", nome: "Reparo de Embreagem", preco: 140, qtd: true }
     ]
   },
   {
     nome: "ESTÉTICA",
     itens: [
-      { id: "pintura", nome: "Lata de Tinta", preco: 140, qtd: true },
-      { id: "rodas", nome: "Jogo de Rodas", preco: 210 },
-      { id: "aerofolio", nome: "Aerofólio", preco: 105 },
-      { id: "parachoque-dianteiro", nome: "Para-Choque Dianteiro", preco: 105 },
-      { id: "parachoque-traseiro", nome: "Para-Choque Traseiro", preco: 105 },
-      { id: "peca-estetica", nome: "Peça Estética", preco: 105, qtd: true }
+      { id: "pintura", nome: "Lata de Tinta", preco: 120, qtd: true },
+      { id: "rodas", nome: "Jogo de Rodas", preco: 230 },
+      { id: "aerofolio", nome: "Aerofólio", preco: 100 },
+      { id: "parachoque-dianteiro", nome: "Para-Choque Dianteiro", preco: 100 },
+      { id: "parachoque-traseiro", nome: "Para-Choque Traseiro", preco: 100 },
+      { id: "peca-estetica", nome: "Peça Estética", preco: 100, qtd: true }
     ]
   },
   {
@@ -128,9 +130,12 @@ const CATEGORIAS = [
     itens: [
       { id: "lockpick", nome: "Lockpick", preco: 80, qtd: true },
       { id: "lockpick-avancada", nome: "Lockpick Avançada", preco: 170, qtd: true },
-      { id: "kit-reparo-motor", nome: "Kit de Reparo de Motor", preco: 280, qtd: true },
-      { id: "cinto-6-pontas", nome: "Cinto 6 Pontas", preco: 270, qtd: true },
-      { id: "pneu", nome: "Pneu de Veículo", indisponivel: true } // sem preço ainda — quando tiver: preco: X, qtd: true
+      { id: "kit-reparo-motor", nome: "Kit de Reparo de Motor", preco: 350, qtd: true },
+      { id: "cinto-6-pontas", nome: "Cinto de Corrida", preco: 270, qtd: true },
+      { id: "chave-roda", nome: "Chave de Roda", preco: 80, qtd: true },
+      { id: "pneu", nome: "Pneu", preco: 70, qtd: true },
+      { id: "alicate-bico", nome: "Alicate de Bico", preco: 200, qtd: true },
+      { id: "lata-spray", nome: "Lata de Spray", preco: 205, qtd: true }
     ]
   }
 ];
@@ -158,6 +163,7 @@ const RECEITAS = {
   "lataria": { sucata: 2, aluminio: 2 },          // Reparo de Lataria
   "motor": { sucata: 5, cobre: 3, aluminio: 2 },  // Reparo de Motor
   "oleo": { "oleo-motor": 1 },                     // Troca de Óleo
+  "troca-pneu": null,                              // Troca de Pneu (serviço novo)
 
   // Peças Classe D
   "d-freio": { aluminio: 10, aco: 10 },
@@ -195,6 +201,10 @@ const RECEITAS = {
   "b-intercooler": { aluminio: 40 },
   "b-embreagem": { aco: 40 },
 
+  // Peças Classe A (materiais ainda não informados)
+  "a-freio": null, "a-suspensao": null, "a-ecu": null, "a-filtro": null, "a-escape": null,
+  "a-coletor": null, "a-combustivel": null, "a-turbo": null, "a-intercooler": null, "a-embreagem": null,
+
   // Reparos Peças
   "rep-freio": { sucata: 3, borracha: 2 },
   "rep-suspensao": { sucata: 3, borracha: 2 },
@@ -231,8 +241,11 @@ const RECEITAS = {
   "lockpick": { aluminio: 3, aco: 2 },
   "lockpick-avancada": { aluminio: 9, aco: 6 },
   "kit-reparo-motor": { plastico: 10, aluminio: 20 }, // Kit de Reparo de Motor (cliente leva para consertar o motor na rua)
-  "cinto-6-pontas": { plastico: 10, aco: 5, borracha: 5 }, // Cinto 6 Pontas
-  "pneu": { borracha: 5 }                              // Pneu de Veículo (em breve)
+  "cinto-6-pontas": { plastico: 10, aco: 5, borracha: 5 }, // Cinto de Corrida (antigo Cinto 6 Pontas)
+  "pneu": { borracha: 5 },                                 // Pneu
+  "chave-roda": null,                                      // Chave de Roda
+  "alicate-bico": null,                                    // Alicate de Bico
+  "lata-spray": null                                       // Lata de Spray
 };
 
 // ================= LÓGICA =================
